@@ -10,15 +10,24 @@ To reproduce the minimal model, first download the functions from CollectiveFeed
 
 ![Parameter initialisation for minimal model in script main.m](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/parameterInitialisation.jpg)
 
-Afterwards, run the simulation and then save the desired outputs.
+Afterwards, run the simulation and save the desired outputs.
 
 If you want to create a movie, set the number of simulations to one and uncomment the last part of main.m with the heading **%% Create Movie** (if you do not want to create a movie, leave it commented). 
 
 ## Reproduction of strain-specific model 
-Similar to the minimal model, first download the functions from CollectiveFeeding/StrainSpecificModel/functions and enter the desired parameters 
+Similar to the minimal model, first download the functions from CollectiveFeeding/StrainSpecificModel/functions and enter the desired parameters.
+Dependent on the number of food patches you need, call the function onePatch, twoPatches or fourPatches for the variable initialFUs. As we use initial lattice sites for worms that do not contain food, the values for the variables rowMiddlePoint and columnMiddlePoint of the function circularWorms.m need to be modified depending on the number of food patches. The values we use for our runs can be found in the comment above those variables in circularWorms.m. If you wish to use other starting positions, make sure that all worms are still within lattice borders because periodic boundary conditions are not explicitly used in this function as our values for rowMiddlePoint and columnMiddlePoint ensure that all worms are located on the lattice. 
+
+Apart from this, the same parameters as in the minimal model can be set here. 
 
 ![Parameter initialisation for strain-specific model in main.m](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/generalParameterInitialisationStrainSpecific.jpg)
+
+The food-leaving probabilites of *npr-1* and N2 worms and the speeds on and off food can be set in the parts of the script depicted below. 
 
 ![Parameter initialisation for strain-specific model in main.m for npr-1 worms](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/parameterInitialisationNpr1.jpg)
 
 ![Parameter initialisation for strain-specific model in main.m for N2 worms](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/parameterInitialisationN2.jpg)
+
+Afterwards, again, run the simulation and save the desired outputs.
+
+## Analysis of simulations
