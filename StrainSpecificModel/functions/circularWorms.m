@@ -1,14 +1,20 @@
 %% calculate initial positions of worms
-function worms = circularWorms(N,L)
+function worms = circularWorms(N,L,nPatches)
 
 % define size and position of the circle containing initial positions of
 % worms
-% (rowMiddlePoint = 18,columnMiddlePoint = 18 for four patches; 
+% (rowMiddlePoint = 18,columnMiddlePoint = 18 for four patches;
 % rowMiddlePoint = 29 and columnMiddlePoint = 29 for one and two patch(es); radius 5)
 radius = 5;
-rowMiddlePoint = 29;
-columnMiddlePoint = 29;
-
+if nPatches==1 || nPatches==2
+    rowMiddlePoint = 29;
+    columnMiddlePoint = 29;
+elseif nPatches ==4
+    rowMiddlePoint = 18;
+    columnMiddlePoint = 18;
+else
+    error(['unsupported number of food patches: ' num2str(nPatches)])
+end
 % calculate all lattice sites within circle
 possibleSites = [];
 for ii = 1:L    % goes through all rows

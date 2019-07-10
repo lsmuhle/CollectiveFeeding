@@ -18,49 +18,50 @@ load('L35N40timeN2patch4SameLeaving.mat')
 timeN2patch4 = time90percentEatenN2;
 
 % calculate means and standard deviations
-meansTimeNpr1(1) = mean(timeNpr1patch1);
-meansTimeNpr1(2) = mean(timeNpr1patch2);
-meansTimeNpr1(3) = mean(timeNpr1patch4);
+deltaT = 10; % set delta T at 10s (moving 2 lattice spacings of 1mm at 200mu/s in one time step)
+meansTimeNpr1(1) = mean(timeNpr1patch1)*deltaT;
+meansTimeNpr1(2) = mean(timeNpr1patch2)*deltaT;
+meansTimeNpr1(3) = mean(timeNpr1patch4)*deltaT;
 
-stdTimeNpr1(1) = std(timeNpr1patch1);
-stdTimeNpr1(2) = std(timeNpr1patch2);
-stdTimeNpr1(3) = std(timeNpr1patch4);
+stdTimeNpr1(1) = std(timeNpr1patch1)*deltaT;
+stdTimeNpr1(2) = std(timeNpr1patch2)*deltaT;
+stdTimeNpr1(3) = std(timeNpr1patch4)*deltaT;
 
-meansTimeN2(1) = mean(timeN2patch1);
-meansTimeN2(2) = mean(timeN2patch2);
-meansTimeN2(3) = mean(timeN2patch4);
+meansTimeN2(1) = mean(timeN2patch1)*deltaT;
+meansTimeN2(2) = mean(timeN2patch2)*deltaT;
+meansTimeN2(3) = mean(timeN2patch4)*deltaT;
 
-stdTimeN2(1) = std(timeN2patch1);
-stdTimeN2(2) = std(timeN2patch2);
-stdTimeN2(3) = std(timeN2patch4);
+stdTimeN2(1) = std(timeN2patch1)*deltaT;
+stdTimeN2(2) = std(timeN2patch2)*deltaT;
+stdTimeN2(3) = std(timeN2patch4)*deltaT;
 
 % plot means with error bars of 1 SD
-figure('pos',[0 0 1240 1748]);
+figure('pos',[0 0 1240 960]/2);
 x = 0:2;
 eNpr1 = errorbar(x,meansTimeNpr1,stdTimeNpr1,'--ob');
 hold on
 eN2 = errorbar(x,meansTimeN2,stdTimeN2,'--or');
-eNpr1.LineWidth = 6;
-eNpr1.MarkerSize = 15;
+eNpr1.LineWidth = 6/2;
+eNpr1.MarkerSize = 15/2;
 eNpr1.MarkerFaceColor = 'b';
-eNpr1.CapSize = 25;
-eN2.LineWidth = 6;
-eN2.MarkerSize = 15;
+eNpr1.CapSize = 25/2;
+eN2.LineWidth = 6/2;
+eN2.MarkerSize = 15/2;
 eN2.MarkerFaceColor = 'r';
-eN2.CapSize = 25; 
+eN2.CapSize = 25/2; 
 [lgd,objects] = legend('npr-1','N2');
-set(findobj(objects,'-property','MarkerSize'),'MarkerSize',15)
-set(findobj(objects,'-property','FontSize'),'FontSize',34)
-set(lgd,'FontSize',40)
-lgd.Position = [0.71 0.7879 0.17 0.125];
+set(findobj(objects,'-property','MarkerSize'),'MarkerSize',15/2)
+set(findobj(objects,'-property','FontSize'),'FontSize',34/2)
+set(lgd,'FontSize',40/2)
+lgd.Position = [0.67 0.775 0.23 0.125];
 xticks(x)
 xticklabels({'1','2','4'})
-axis([0 2 0 1800])
-set(gca,'FontSize',42)
+axis([0 2 0 2e4])
+set(gca,'FontSize',42/2)
 ax = gca;
-ax.LineWidth = 5;
+ax.LineWidth = 5/2;
 xlabel('number of food patches')
-ylabel('mean time steps')
+ylabel('mean time (s)')
 box off
 %% calculate the sum of food units every worm has eaten in every simulation
 

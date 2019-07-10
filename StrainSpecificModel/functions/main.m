@@ -1,5 +1,8 @@
 clear;
-clear -vars;
+
+% specify folder to save outputs
+savepath = '../dataZeroFoodLeavingProbability/';
+filesuffix = 'ZeroLeaving'; % file name ending
 
 %% Parameter Initialization
 L = 35;                                                 % size of the lattice --> lattice has LxL sites   
@@ -7,9 +10,17 @@ N = 40;                                                  % number of worms in si
 time = 1800;                                            % number of times steps for which the simulation is executed 
 numberSimulations = 1;                                  % number of repetitions of the simulation
 numberFUs = 10*L*L;                                     % number of distributed food units (FU)
-initialWorms = circularWorms(N,L);                      % initial distribution of worms on lattice       
-initialFUs = onePatch(numberFUs,L);                     % initial distribution of FUs on lattice
-          
+nPatches = 1;
+initialWorms = circularWorms(N,L,nPatches);                      % initial distribution of worms on lattice
+if nPatches == 1
+    initialFUs = onePatch(numberFUs,L);                     % initial distribution of FUs on lattice
+elseif nPatches == 2
+    initialFUs = twoPatches(numberFUs,L);                     % initial distribution of FUs on lattice
+elseif nPatches == 4
+    initialFUs = fourPatches(numberFUs,L);                     % initial distribution of FUs on lattice
+else
+    error(['unsupported number of food patches: ' num2str(nPatches)])
+end
 %% Initialize parameters for simulation with attraction                                 
 saveNpr1 = zeros(N,2,time);                             % stores position of each npr-1 worm for every time step within one repetition
 saveFUsNpr1 = zeros(L,L,time);                          % stores distribution of food units for every time step within one repetition
@@ -22,7 +33,7 @@ speedOffFoodNpr1 = 2;                                   % determines speed of np
 leavingRateNpr1 = 0.2;                                  % determines food-leaving rate of npr-1 worms 
 %% Script for foraging with possible targeted steps
 
-for loop = 1:numberSimulations
+for simCtr = 1:numberSimulations
     
     % get intitial position of worms and food 
     npr1Worms = initialWorms;
@@ -32,12 +43,12 @@ for loop = 1:numberSimulations
    
         % Step 1: Compute the eaten FUs at the current positions of the
         % worms
-        [FUsUpdate,FUsEatenNpr1(:,t,loop)] = computeFUsUpdate(FUsNpr1,npr1Worms);
+        [FUsUpdate,FUsEatenNpr1(:,t,simCtr)] = computeFUsUpdate(FUsNpr1,npr1Worms);
         FUsNpr1 = FUsNpr1 + FUsUpdate;
 
         % Step 2: Determine motion update of the worms and save
         % individually taken steps
-        [motionUpdate,allStepsNpr1(:,t,loop)] = computeMotionUpdateNpr1(N,L,FUsNpr1,...
+        [motionUpdate,allStepsNpr1(:,t,simCtr)] = computeMotionUpdateNpr1(N,L,FUsNpr1,...
             npr1Worms,leavingRateNpr1,speedOnFoodNpr1,speedOffFoodNpr1);
 
         % Step 3: Update the position of the worms
@@ -51,18 +62,20 @@ for loop = 1:numberSimulations
     end
     
     % Calculate remaining FUs and time when 90% of them have been eaten
-    remainingFUsNpr1(loop,:) = reshape(sum(sum(saveFUsNpr1)),[1,time]);
-    allTimes90PercentEatenNpr1 = find(remainingFUsNpr1(loop,:) < (sum(sum(initialFUs)) - ...
+    remainingFUsNpr1(simCtr,:) = reshape(sum(sum(saveFUsNpr1)),[1,time]);
+    allTimes90PercentEatenNpr1 = find(remainingFUsNpr1(simCtr,:) < (sum(sum(initialFUs)) - ...
         (numberFUs * 0.9)));
     if isempty(allTimes90PercentEatenNpr1)
-        time90percentEatenNpr1(loop) = NaN;
+        time90percentEatenNpr1(simCtr) = NaN;
         fprintf('Not all targets are eaten.\nRepeat simulation with increased time\n')
         return;
     else
-        time90percentEatenNpr1(loop) = allTimes90PercentEatenNpr1(1);
+        time90percentEatenNpr1(simCtr) = allTimes90PercentEatenNpr1(1);
     end
 end
-
+%% save npr1 data
+save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) filesuffix])
+    
 %% Initialize parameters for simulation of random movement
 saveN2 = zeros(N,2,time);                               % stores position of each N2 worm for every time step of one simulation repetition
 saveFUsN2 = zeros(L,L,time);                            % stores distribution of food units for every time of one simulation repetition
@@ -75,7 +88,7 @@ speedOffFoodN2 = 2;                                     % determines speed of N2
 leavingRateN2 = 0.03;                                   % determines food-leaving rate of N2 worms
 %% Script for entirely random foraging
 
-for loop2 = 1:numberSimulations
+for simCtr = 1:numberSimulations
     
     % get initial position of worms and food 
     N2worms = initialWorms;
@@ -85,12 +98,12 @@ for loop2 = 1:numberSimulations
 
         % Step 1: Compute the eaten FUs at the current positions of the
         % worms
-        [FUsUpdate,FUsEatenN2(:,l,loop2)] = computeFUsUpdate(FUsN2,N2worms);
+        [FUsUpdate,FUsEatenN2(:,l,simCtr)] = computeFUsUpdate(FUsN2,N2worms);
         FUsN2 = FUsN2 + FUsUpdate;
 
         % Step 2: Determine motion update of the worms and save
         % individually taken steps
-        [motionUpdate,allStepsN2(:,l,loop2)] = computeMotionUpdateN2(N,L,FUsN2,...
+        [motionUpdate,allStepsN2(:,l,simCtr)] = computeMotionUpdateN2(N,L,FUsN2,...
             N2worms,leavingRateN2,speedOnFoodN2,speedOffFoodN2);
 
         % Step 3: Update the position of the worms
@@ -104,63 +117,63 @@ for loop2 = 1:numberSimulations
     end
     
     % Calculate remaining FUs and time when 90% of them have been eaten
-    remainingFUsN2(loop2,:) = reshape(sum(sum(saveFUsN2)),[1,time]);
-    allTimes90PercentEatenN2 = find(remainingFUsN2(loop2,:) < (sum(sum(initialFUs))...
+    remainingFUsN2(simCtr,:) = reshape(sum(sum(saveFUsN2)),[1,time]);
+    allTimes90PercentEatenN2 = find(remainingFUsN2(simCtr,:) < (sum(sum(initialFUs))...
         - (numberFUs * 0.9)));
     if isempty(allTimes90PercentEatenN2)
-        time90percentEatenN2(loop2) = NaN;
+        time90percentEatenN2(simCtr) = NaN;
         fprintf('Not all targets are eaten.\nRepeat simulation with increased time\n')
         return;
     else
-        time90percentEatenN2(loop2) = allTimes90PercentEatenN2(1);
+        time90percentEatenN2(simCtr) = allTimes90PercentEatenN2(1);
     end
 end
 
 %% Create movie
-
-f = figure;
-set(f,'Units','pixels','Position',[0,0,1920,1080])
-    
-v = VideoWriter('1patch_L35_N40','MPEG-4');
-v.Quality = 100;
-open(v);
-for i = 1:time
-    data_forager = saveNpr1(:,:,i);
-    data_forager_2 = saveN2(:,:,i);
-    F = saveFUsNpr1(:,:,i);
-    F2 = saveFUsN2(:,:,i);
-    
-    subplot(1,2,1);
-    mesh(F,'EdgeColor','none','FaceColor','interp');
-    hold on;
-    plot(data_forager(:,2),data_forager(:,1),'r.','MarkerSize',20);
-    hold off;
-    axis([1 L 1 L])
-    pbaspect([1 1 1])
-    set(gca,'XTickLabel',[])
-    set(gca,'YTickLabel',[])
-    caxis([0 max(max(initialFUs))])
-    view(0,-90)
-    grid on;
-    title1 = title('npr-1');
-    title1.FontSize = 34; 
-    
-    subplot(1,2,2);
-    mesh(F2,'EdgeColor','none','FaceColor','interp');
-    hold on;
-    plot(data_forager_2(:,2),data_forager_2(:,1),'r.','MarkerSize',20);
-    hold off;
-    axis([1 L 1 L])
-    pbaspect([1 1 1])
-    set(gca,'XTickLabel',[])
-    set(gca,'YTickLabel',[])
-    caxis([0 max(max(initialFUs))])
-    view(0,-90)
-    grid on;
-    title2 = title('N2');
-    title2.FontSize = 34;
-    
-    frame = getframe(gcf);
-    writeVideo(v,frame);
-end
-close(v);
+% 
+% f = figure;
+% set(f,'Units','pixels','Position',[0,0,1920,1080])
+%     
+% v = VideoWriter('1patch_L35_N40','MPEG-4');
+% v.Quality = 100;
+% open(v);
+% for i = 1:time
+%     data_forager = saveNpr1(:,:,i);
+%     data_forager_2 = saveN2(:,:,i);
+%     F = saveFUsNpr1(:,:,i);
+%     F2 = saveFUsN2(:,:,i);
+%     
+%     subplot(1,2,1);
+%     mesh(F,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(data_forager(:,2),data_forager(:,1),'r.','MarkerSize',20);
+%     hold off;
+%     axis([1 L 1 L])
+%     pbaspect([1 1 1])
+%     set(gca,'XTickLabel',[])
+%     set(gca,'YTickLabel',[])
+%     caxis([0 max(max(initialFUs))])
+%     view(0,-90)
+%     grid on;
+%     title1 = title('npr-1');
+%     title1.FontSize = 34; 
+%     
+%     subplot(1,2,2);
+%     mesh(F2,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(data_forager_2(:,2),data_forager_2(:,1),'r.','MarkerSize',20);
+%     hold off;
+%     axis([1 L 1 L])
+%     pbaspect([1 1 1])
+%     set(gca,'XTickLabel',[])
+%     set(gca,'YTickLabel',[])
+%     caxis([0 max(max(initialFUs))])
+%     view(0,-90)
+%     grid on;
+%     title2 = title('N2');
+%     title2.FontSize = 34;
+%     
+%     frame = getframe(gcf);
+%     writeVideo(v,frame);
+% end
+% close(v);
