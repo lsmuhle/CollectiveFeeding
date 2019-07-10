@@ -6,7 +6,7 @@ newPosition = indicesInput(n,:) + motionUpdate;
 newPosition(newPosition > L) = newPosition(newPosition > L) - L;   % consider PBCs
 newPosition(newPosition < 1) = newPosition(newPosition < 1) + L;   % consider PBCs
 
-occupancy = find(indicesInput(:,1) == newPosition(1) & indicesInput(:,2) == newPosition(2));
+occupancy = find(indicesInput(:,1) == newPosition(1) & indicesInput(:,2) == newPosition(2),1);
 
 % check if square is unoccupied or if worm should try to move to another square 
 
@@ -30,7 +30,7 @@ else
             newPosition = indicesInput(n,:) + update;
             newPosition(newPosition > L) = newPosition(newPosition > L) - L;                             % consider PBCs
             newPosition(newPosition < 1) = newPosition(newPosition < 1) + L;                             % consider PBCs
-            occupancy = find(indicesInput(:,1) == newPosition(1) & indicesInput(:,2) == newPosition(2)); % check occupancy of chosen site to go to
+            occupancy = find(indicesInput(:,1) == newPosition(1) & indicesInput(:,2) == newPosition(2),1); % check occupancy of chosen site to go to
             if isempty(occupancy)
                 motionUpdate = update;
                 indicesInput(n,:) = newPosition;

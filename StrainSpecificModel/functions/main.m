@@ -74,7 +74,8 @@ for simCtr = 1:numberSimulations
     end
 end
 %% save npr1 data
-save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) filesuffix])
+save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'Npr1' filesuffix],...
+    'time90percentEatenNpr1','FUsEatenNpr1','allStepsNpr1')
     
 %% Initialize parameters for simulation of random movement
 saveN2 = zeros(N,2,time);                               % stores position of each N2 worm for every time step of one simulation repetition
@@ -128,7 +129,9 @@ for simCtr = 1:numberSimulations
         time90percentEatenN2(simCtr) = allTimes90PercentEatenN2(1);
     end
 end
-
+%% save N2 data
+save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'N2' filesuffix],...
+    'time90percentEatenN2','FUsEatenN2','allStepsN2')
 %% Create movie
 % 
 % f = figure;

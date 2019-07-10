@@ -11,9 +11,9 @@ directFUs = diag(FUs(sitesDistance1(:,1),sitesDistance1(:,2))) > 0;             
 % check existence of neighbours in direct neighbourhood
 directNeighbours = false(size(sitesDistance1,1),1);
 for ii = 1:size(sitesDistance1,1)
-    existent = find(indices(:,1) == sitesDistance1(ii,1) &...
-        indices(:,2) == sitesDistance1(ii,2));
-    if isempty(existent) == 0
+    first_existent = find(indices(:,1) == sitesDistance1(ii,1) &...
+        indices(:,2) == sitesDistance1(ii,2),1);
+    if isempty(first_existent) == 0
         directNeighbours(ii) = true;
     end
 end
@@ -27,9 +27,9 @@ remoteFUs = diag(FUs(sitesDistance2(:,1),sitesDistance2(:,2))) > 0;             
 % check existence of neighbours in remote neighbourhood
 remoteNeighbours = false(size(sitesDistance2,1),1);
 for ii = 1:size(sitesDistance2,1)
-    existent = find(indices(:,1) == sitesDistance2(ii,1) &...
-        indices(:,2) == sitesDistance2(ii,2));
-    if isempty(existent) == 0
+    first_existent = find(indices(:,1) == sitesDistance2(ii,1) &...
+        indices(:,2) == sitesDistance2(ii,2),1);
+    if isempty(first_existent) == 0
         remoteNeighbours(ii) = true;
     end
 end
