@@ -1,16 +1,16 @@
 clear;
 
 % specify folder to save outputs
-savepath = '../dataZeroFoodLeavingProbability/';
-filesuffix = 'ZeroLeaving'; % file name ending
+savepath = '../dataLowFoodLeavingProbability/';
+filesuffix = 'LowLeaving'; % file name ending
 
 %% Parameter Initialization
+for nPatches = [1 2 4]
 L = 35;                                                 % size of the lattice --> lattice has LxL sites   
 N = 40;                                                  % number of worms in simulation
 time = 1800;                                            % number of times steps for which the simulation is executed 
-numberSimulations = 1;                                  % number of repetitions of the simulation
+numberSimulations = 500;                                  % number of repetitions of the simulation
 numberFUs = 10*L*L;                                     % number of distributed food units (FU)
-nPatches = 1;
 initialWorms = circularWorms(N,L,nPatches);                      % initial distribution of worms on lattice
 if nPatches == 1
     initialFUs = onePatch(numberFUs,L);                     % initial distribution of FUs on lattice
@@ -22,19 +22,19 @@ else
     error(['unsupported number of food patches: ' num2str(nPatches)])
 end
 %% Initialize parameters for simulation with attraction                                 
-saveNpr1 = zeros(N,2,time);                             % stores position of each npr-1 worm for every time step within one repetition
-saveFUsNpr1 = zeros(L,L,time);                          % stores distribution of food units for every time step within one repetition
 allStepsNpr1 = zeros(N,time,numberSimulations);         % stores number of steps each npr-1 worm has taken at every time step and every simulation repetition
 FUsEatenNpr1 = zeros(N,time,numberSimulations);         % stores number of FU each npr-1 worm has eaten at every time step and every simulation repetition
 remainingFUsNpr1 = zeros(numberSimulations,time);       % stores the number of remaining food units on the lattice for every time step and every repetition of the simulation
 time90percentEatenNpr1 = zeros(numberSimulations,1);    % stores the time when 90% of the food units have been eaten for every repetition of the simulation
 speedOnFoodNpr1 = 2;                                    % determines speed of npr-1 worms on food
 speedOffFoodNpr1 = 2;                                   % determines speed of npr-1 worms in absence of food 
-leavingRateNpr1 = 0.2;                                  % determines food-leaving rate of npr-1 worms 
+leavingRateNpr1 = 0.1                                  % determines food-leaving rate of npr-1 worms 
 %% Script for foraging with possible targeted steps
 
-for simCtr = 1:numberSimulations
-    
+parfor simCtr = 1:numberSimulations
+    % initialize simulation-specific parameters
+    thisNpr1 = zeros(N,2,time);                             % stores position of each npr-1 worm for every time step within one repetition
+    thisFUsNpr1 = zeros(L,L,time);                          % stores distribution of food units for every time step within one repetition
     % get intitial position of worms and food 
     npr1Worms = initialWorms;
     FUsNpr1 = initialFUs;
@@ -57,18 +57,18 @@ for simCtr = 1:numberSimulations
         npr1Worms(npr1Worms < 1) = npr1Worms(npr1Worms < 1) + L;                % employ PBCs
 
         % Step 4: Save worm and FUs distribution
-        saveNpr1(:,:,t) = npr1Worms;
-        saveFUsNpr1(:,:,t) = FUsNpr1;
+        thisNpr1(:,:,t) = npr1Worms;
+        thisFUsNpr1(:,:,t) = FUsNpr1;
     end
     
     % Calculate remaining FUs and time when 90% of them have been eaten
-    remainingFUsNpr1(simCtr,:) = reshape(sum(sum(saveFUsNpr1)),[1,time]);
+    remainingFUsNpr1(simCtr,:) = reshape(sum(sum(thisFUsNpr1)),[1,time]);
     allTimes90PercentEatenNpr1 = find(remainingFUsNpr1(simCtr,:) < (sum(sum(initialFUs)) - ...
         (numberFUs * 0.9)));
     if isempty(allTimes90PercentEatenNpr1)
         time90percentEatenNpr1(simCtr) = NaN;
-        fprintf('Not all targets are eaten.\nRepeat simulation with increased time\n')
-        return;
+        warning('Not all targets are eaten.\nRepeat simulation with increased time\n')
+%         return;
     else
         time90percentEatenNpr1(simCtr) = allTimes90PercentEatenNpr1(1);
     end
@@ -78,19 +78,20 @@ save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'Npr1' fi
     'time90percentEatenNpr1','FUsEatenNpr1','allStepsNpr1')
     
 %% Initialize parameters for simulation of random movement
-saveN2 = zeros(N,2,time);                               % stores position of each N2 worm for every time step of one simulation repetition
-saveFUsN2 = zeros(L,L,time);                            % stores distribution of food units for every time of one simulation repetition
 allStepsN2 = zeros(N,time,numberSimulations);           % stores number of steps each N2 worm has taken at every time step of all simulations
 FUsEatenN2 = zeros(N,time,numberSimulations);           % stores number of FUs each N2 worm has eaten at every time step of all simulations
 remainingFUsN2 = zeros(numberSimulations,time);         % stores number of remaining food units on the lattice at every time step of all simulations
 time90percentEatenN2 = zeros(numberSimulations,1);      % stores time when 90% of the food units have been eaten for each repetition of the simulations
 speedOnFoodN2 = 1;                                      % determines speed of N2 worms on food
 speedOffFoodN2 = 2;                                     % determines speed of N2 worms in absence of food
-leavingRateN2 = 0.03;                                   % determines food-leaving rate of N2 worms
+leavingRateN2 = 0.01                                   % determines food-leaving rate of N2 worms
 %% Script for entirely random foraging
 
-for simCtr = 1:numberSimulations
-    
+parfor simCtr = 1:numberSimulations
+    % initialize simulation-specific parameters
+    thisN2 = zeros(N,2,time);                               % stores position of each N2 worm for every time step of one simulation repetition
+    thisFUsN2 = zeros(L,L,time);                            % stores distribution of food units for every time of one simulation repetition
+
     % get initial position of worms and food 
     N2worms = initialWorms;
     FUsN2 = initialFUs;
@@ -113,18 +114,18 @@ for simCtr = 1:numberSimulations
         N2worms(N2worms < 1) = N2worms(N2worms < 1) + L;                    % employ PBCs
 
         % Step 4: Save worm and FUs distribution
-        saveN2(:,:,l) = N2worms;
-        saveFUsN2(:,:,l) = FUsN2;
+        thisN2(:,:,l) = N2worms;
+        thisFUsN2(:,:,l) = FUsN2;
     end
     
     % Calculate remaining FUs and time when 90% of them have been eaten
-    remainingFUsN2(simCtr,:) = reshape(sum(sum(saveFUsN2)),[1,time]);
+    remainingFUsN2(simCtr,:) = reshape(sum(sum(thisFUsN2)),[1,time]);
     allTimes90PercentEatenN2 = find(remainingFUsN2(simCtr,:) < (sum(sum(initialFUs))...
         - (numberFUs * 0.9)));
     if isempty(allTimes90PercentEatenN2)
         time90percentEatenN2(simCtr) = NaN;
         fprintf('Not all targets are eaten.\nRepeat simulation with increased time\n')
-        return;
+%         return;
     else
         time90percentEatenN2(simCtr) = allTimes90PercentEatenN2(1);
     end
@@ -180,3 +181,4 @@ save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'N2' file
 %     writeVideo(v,frame);
 % end
 % close(v);
+end
