@@ -26,7 +26,7 @@ for n = 1:N
         = adjacentWormsFUs(L,indicesBeforeUpdate,n,FUsNpr1,directNeighbourhood,remoteNeighbourhood);
     
     % worm is not on food and performs random step to remote neighbourhood
-    if FUsNpr1(indicesBeforeUpdate(n,1),indicesBeforeUpdate(n,2)) == 0
+    if FUsNpr1(indicesBeforeUpdate(n,1),indicesBeforeUpdate(n,2)) <= 0
         [motionUpdate(n,:),indicesInput] = randomStep(L,indicesInput,n,speedOffFoodNpr1,...
             directNeighbourhood,remoteNeighbourhood);
         stepTaken(n) = max(abs(motionUpdate(n,:)));

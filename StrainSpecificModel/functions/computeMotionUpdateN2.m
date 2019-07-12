@@ -26,7 +26,7 @@ for n = 1:N
         directNeighbourhood,remoteNeighbourhood);
      
     % worm is not on food and performs random step to remote neighbourhood
-    if FUsN2(indicesBeforeUpdate(n,1),indicesBeforeUpdate(n,2)) == 0
+    if FUsN2(indicesBeforeUpdate(n,1),indicesBeforeUpdate(n,2)) <= 0
         [motionUpdate(n,:),indicesInput] = randomStep(L,indicesInput,n,speedOffFoodN2,...
             directNeighbourhood,remoteNeighbourhood);
         stepTaken(n) = max(abs(motionUpdate(n,:)));
