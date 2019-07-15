@@ -9,9 +9,8 @@ for nPatches = [1 2 4]
 L = 35;                                                 % size of the lattice --> lattice has LxL sites   
 N = 40;                                                  % number of worms in simulation
 time = 1000;                                            % number of times steps for which the simulation is executed 
-numberSimulations = 1;                                  % number of repetitions of the simulation
+numberSimulations = 500;                                  % number of repetitions of the simulation
 numberFUs = 10*L*L;                                     % number of distributed food units (FU)
-initialWorms = circularWorms(N,L,nPatches);                      % initial distribution of worms on lattice
 if nPatches == 1
     initialFUs = onePatch(numberFUs,L);                     % initial distribution of FUs on lattice
 elseif nPatches == 2
@@ -30,14 +29,16 @@ time90percentEatenNpr1 = zeros(numberSimulations,1);    % stores the time when 9
 speedOnFoodNpr1 = 2;                                    % determines speed of npr-1 worms on food
 speedOffFoodNpr1 = 2;                                   % determines speed of npr-1 worms in absence of food 
 leavingRateNpr1 = 0                                  % determines food-leaving rate of npr-1 worms 
-relativeFeedingRateNpr1 = 0.6
+relativeFeedingRateNpr1 = 0.576
 %% Script for foraging with possible targeted steps
 
 parfor simCtr = 1:numberSimulations
+    rng(simCtr) % random-number generator seeded reproducibly for this simulation
     % initialize simulation-specific parameters
     thisNpr1 = zeros(N,2,time);                             % stores position of each npr-1 worm for every time step within one repetition
     thisFUsNpr1 = zeros(L,L,time);                          % stores distribution of food units for every time step within one repetition
     % get intitial position of worms and food 
+    initialWorms = circularWorms(N,L,nPatches);                      % initial distribution of worms on lattice
     npr1Worms = initialWorms;
     FUsNpr1 = initialFUs;
     
@@ -91,11 +92,13 @@ relativeFeedingRateN2 = 1
 %% Script for entirely random foraging
 
 parfor simCtr = 1:numberSimulations
+    rng(simCtr) % random-number generator seeded reproducibly for this simulation
     % initialize simulation-specific parameters
     thisN2 = zeros(N,2,time);                               % stores position of each N2 worm for every time step of one simulation repetition
     thisFUsN2 = zeros(L,L,time);                            % stores distribution of food units for every time of one simulation repetition
 
     % get initial position of worms and food 
+    initialWorms = circularWorms(N,L,nPatches);                      % initial distribution of worms on lattice
     N2worms = initialWorms;
     FUsN2 = initialFUs;
     
