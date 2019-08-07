@@ -1,14 +1,14 @@
 clear;
 
 % specify folder to save outputs
-savepath = '../dataDifferentFeedingRates/';
-filesuffix = 'FeedingRates'; % file name ending
+savepath = '../dataZeroFoodLeavingProbability/';
+filesuffix = 'ZeroLeavingLowerFeedingRate'; % file name ending
 
 %% Parameter Initialization
 for nPatches = [1 2 4]
 L = 35;                                                 % size of the lattice --> lattice has LxL sites   
 N = 40;                                                  % number of worms in simulation
-time = 1000;                                            % number of times steps for which the simulation is executed 
+time = 1500;                                            % number of times steps for which the simulation is executed 
 numberSimulations = 500;                                  % number of repetitions of the simulation
 numberFUs = 10*L*L;                                     % number of distributed food units (FU)
 if nPatches == 1
@@ -29,7 +29,8 @@ time90percentEatenNpr1 = zeros(numberSimulations,1);    % stores the time when 9
 speedOnFoodNpr1 = 2;                                    % determines speed of npr-1 worms on food
 speedOffFoodNpr1 = 2;                                   % determines speed of npr-1 worms in absence of food 
 leavingRateNpr1 = 0                                  % determines food-leaving rate of npr-1 worms 
-relativeFeedingRateNpr1 = 0.576
+relativeFeedingRateN2 = 0.4
+relativeFeedingRateNpr1 = 0.4%0.576*relativeFeedingRateN2
 %% Script for foraging with possible targeted steps
 
 parfor simCtr = 1:numberSimulations
@@ -88,7 +89,6 @@ time90percentEatenN2 = zeros(numberSimulations,1);      % stores time when 90% o
 speedOnFoodN2 = 1;                                      % determines speed of N2 worms on food
 speedOffFoodN2 = 2;                                     % determines speed of N2 worms in absence of food
 leavingRateN2 = 0                                   % determines food-leaving rate of N2 worms
-relativeFeedingRateN2 = 1
 %% Script for entirely random foraging
 
 parfor simCtr = 1:numberSimulations
@@ -139,12 +139,12 @@ end
 %% save N2 data
 save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'N2' filesuffix],...
     'time90percentEatenN2','FUsEatenN2','allStepsN2')
-%% Create movie
-
+% %% Create movie
+% 
 % f = figure;
 % set(f,'Units','pixels','Position',[0,0,1920,1080])
 %     
-% v = VideoWriter('1patch_L35_N40','MPEG-4');
+% v = VideoWriter([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) filesuffix],'MPEG-4');
 % v.Quality = 100;
 % open(v);
 % for i = 1:time
@@ -153,7 +153,7 @@ save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'N2' file
 %     F = thisFUsNpr1(:,:,i);
 %     F2 = thisFUsN2(:,:,i);
 %     
-% %     subplot(1,2,1);
+%     subplot(1,2,1);
 %     mesh(F,'EdgeColor','none','FaceColor','interp');
 %     hold on;
 %     plot(data_forager(:,2),data_forager(:,1),'r.','MarkerSize',20);
@@ -168,20 +168,20 @@ save([savepath 'L' num2str(L) 'N' num2str(N) 'patch' num2str(nPatches) 'N2' file
 %     title1 = title('npr-1');
 %     title1.FontSize = 34; 
 %     
-% %     subplot(1,2,2);
-% %     mesh(F2,'EdgeColor','none','FaceColor','interp');
-% %     hold on;
-% %     plot(data_forager_2(:,2),data_forager_2(:,1),'r.','MarkerSize',20);
-% %     hold off;
-% %     axis([1 L 1 L])
-% %     pbaspect([1 1 1])
-% %     set(gca,'XTickLabel',[])
-% %     set(gca,'YTickLabel',[])
-% %     caxis([0 max(max(initialFUs))])
-% %     view(0,-90)
-% %     grid on;
-% %     title2 = title('N2');
-% %     title2.FontSize = 34;
+%     subplot(1,2,2);
+%     mesh(F2,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(data_forager_2(:,2),data_forager_2(:,1),'r.','MarkerSize',20);
+%     hold off;
+%     axis([1 L 1 L])
+%     pbaspect([1 1 1])
+%     set(gca,'XTickLabel',[])
+%     set(gca,'YTickLabel',[])
+%     caxis([0 max(max(initialFUs))])
+%     view(0,-90)
+%     grid on;
+%     title2 = title('N2');
+%     title2.FontSize = 34;
 %     
 %     frame = getframe(gcf);
 %     writeVideo(v,frame);

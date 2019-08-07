@@ -1,6 +1,6 @@
 %% reset
 clear;
-%% calculate means of needed time until 90 % of food is eaten for social and solitary worms and plot results
+%% calculate means of needed time until 90 % of food is eaten for social and solitary agents and plot results
 
 % load data and create variables
 load('L35N40gamma0TimeSocialRestricted.mat')
@@ -58,7 +58,7 @@ eSolitary.LineWidth = 6;
 eSolitary.MarkerSize = 15;
 eSolitary.MarkerFaceColor = 'r';
 eSolitary.CapSize = 25; 
-[lgd,objects] = legend('social worms','solitary worms');
+[lgd,objects] = legend('social agents','solitary agents');
 set(findobj(objects,'-property','MarkerSize'),'MarkerSize',15)
 set(findobj(objects,'-property','FontSize'),'FontSize',34)
 set(lgd,'FontSize',40)
@@ -72,7 +72,7 @@ xlabel('degree of food clustering determined by \gamma')
 ylabel('mean time steps')
 box off
 
-%% analyse the number of food pieces eaten by every worms
+%% analyse the number of food pieces eaten by every agents
 
 % calculate the sum of food units eaten by every worm per simulation
 load('L35N40gamma0IndividuallyEatenFUsSocialRestricted.mat')
@@ -89,7 +89,7 @@ FUsPerSocialWormGamma0 = reshape(FUsPerSocialWormGamma0,[40*500,1]);
 FUsPerSocialWormEffGamma0 = reshape(FUsPerSocialWormEffGamma0,[40*500,1]);
 
 
-% social worms, gamma 1
+% social agents, gamma 1
 load('L35N40gamma1IndividuallyEatenFUsSocialRestricted.mat')
 FUsSocialGamma1 = FUsEatenSocial;
 FUsPerSocialWormGamma1 = zeros(40,500);
@@ -103,7 +103,7 @@ end
 FUsPerSocialWormGamma1 = reshape(FUsPerSocialWormGamma1,[40*500,1]);
 FUsPerSocialWormEffGamma1 = reshape(FUsPerSocialWormEffGamma1,[40*500,1]);
 
-% social worms, gamma 2
+% social agents, gamma 2
 load('L35N40gamma2IndividuallyEatenFUsSocialRestricted.mat')
 FUsSocialGamma2 = FUsEatenSocial;
 FUsPerSocialWormGamma2 = zeros(40,500);
@@ -118,7 +118,7 @@ FUsPerSocialWormGamma2 = reshape(FUsPerSocialWormGamma2,[40*500,1]);
 FUsPerSocialWormEffGamma2 = reshape(FUsPerSocialWormEffGamma2,[40*500,1]);
 
 
-% social worms, gamma3
+% social agents, gamma3
 load('L35N40gamma3IndividuallyEatenFUsSocialRestricted.mat')
 FUsSocialGamma3 = FUsEatenSocial;
 FUsPerSocialWormGamma3 = zeros(40,500);
@@ -133,7 +133,7 @@ FUsPerSocialWormGamma3 = reshape(FUsPerSocialWormGamma3,[40*500,1]);
 FUsPerSocialWormEffGamma3 = reshape(FUsPerSocialWormEffGamma3,[40*500,1]);
 
 
-% solitary worms, gamma 0
+% solitary agents, gamma 0
 load('L35N40gamma0IndividuallyEatenFUsSolitaryRestricted.mat')
 FUsSolitaryGamma0 = FUsEatenSolitary;
 FUsPerSolitaryWormGamma0 = zeros(40,500);
@@ -148,7 +148,7 @@ FUsPerSolitaryWormGamma0 = reshape(FUsPerSolitaryWormGamma0,[40*500,1]);
 FUsPerSolitaryWormEffGamma0 = reshape(FUsPerSolitaryWormEffGamma0,[40*500,1]);
 
 
-% solitary worms, gamma 1
+% solitary agents, gamma 1
 load('L35N40gamma1IndividuallyEatenFUsSolitaryRestricted.mat')
 FUsSolitaryGamma1 = FUsEatenSolitary;
 FUsPerSolitaryWormGamma1 = zeros(40,500);
@@ -163,7 +163,7 @@ FUsPerSolitaryWormGamma1 = reshape(FUsPerSolitaryWormGamma1,[40*500,1]);
 FUsPerSolitaryWormEffGamma1 = reshape(FUsPerSolitaryWormEffGamma1,[40*500,1]);
 
 
-% solitary worms, gamma 2
+% solitary agents, gamma 2
 load('L35N40gamma2IndividuallyEatenFUsSolitaryRestricted.mat')
 FUsSolitaryGamma2 = FUsEatenSolitary;
 FUsPerSolitaryWormGamma2 = zeros(40,500);
@@ -178,7 +178,7 @@ FUsPerSolitaryWormGamma2 = reshape(FUsPerSolitaryWormGamma2,[40*500,1]);
 FUsPerSolitaryWormEffGamma2 = reshape(FUsPerSolitaryWormEffGamma2,[40*500,1]);
 
 
-% solitary worms, gamma3 
+% solitary agents, gamma3 
 load('L35N40gamma3IndividuallyEatenFUsSolitaryRestricted.mat')
 FUsSolitaryGamma3 = FUsEatenSolitary;
 FUsPerSolitaryWormGamma3 = zeros(40,500);
@@ -196,7 +196,7 @@ FUsPerSolitaryWormEffGamma3 = reshape(FUsPerSolitaryWormEffGamma3,[40*500,1]);
 
 edges = 0:10:800;
 
-% plot normalized combined histogram for social worms
+% plot normalized combined histogram for social agents
 figure('pos',[0 0 1240 1748]);
 hSocial(1) = histogram(FUsPerSocialWormGamma0,'BinEdges',edges,'Normalization','probability','DisplayStyle','stairs','EdgeColor','r');
 hold on
@@ -219,7 +219,7 @@ lgd.LineWidth = 6;
 lgd.FontSize = 50;
 box off
 
-%% plot same for solitary worms 
+%% plot same for solitary agents 
 
 edges = 0:10:800;
 
@@ -344,7 +344,7 @@ efficienciesSolitaryGamma1 = FUsPerSolitaryWormEffGamma1./summedStepsSolitaryGam
 efficienciesSolitaryGamma2 = FUsPerSolitaryWormEffGamma2./summedStepsSolitaryGamma2;
 efficienciesSolitaryGamma3 = FUsPerSolitaryWormEffGamma3./summedStepsSolitaryGamma3;
 
-%% plot histograms of individual efficiencies of social worms
+%% plot histograms of individual efficiencies of social agents
 edges = 0:0.01:1;
 
 figure('pos',[0 0 1240 1748]);
@@ -368,7 +368,7 @@ lgd = findobj(gcf, 'Type', 'Legend');
 lgd.LineWidth = 6;
 lgd.FontSize = 50;
 box off
-%% plot histograms of individual foraging efficiencies of solitary worms
+%% plot histograms of individual foraging efficiencies of solitary agents
 edges = 0:0.01:1;
 
 figure('pos',[0 0 1240 1748]);

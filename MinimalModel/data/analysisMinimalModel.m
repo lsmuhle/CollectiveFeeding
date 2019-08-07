@@ -66,7 +66,7 @@ eSolitary.LineWidth = 6;
 eSolitary.MarkerSize = 15;
 eSolitary.MarkerFaceColor = 'r';
 eSolitary.CapSize = 25; 
-[lgd,objects] = legend('social worms','solitary worms');
+[lgd,objects] = legend('social agents','solitary agents');
 set(findobj(objects,'-property','MarkerSize'),'MarkerSize',15)
 set(findobj(objects,'-property','FontSize'),'FontSize',34)
 set(lgd,'FontSize',40)
@@ -376,7 +376,7 @@ lgd = findobj(gcf, 'Type', 'Legend');
 lgd.LineWidth = 6;
 lgd.FontSize = 50;
 box off
-%% plot histograms of individual foraging efficiencies of solitary worms
+%% plot histograms of individual foraging efficiencies of solitary agents
 edges = 0:0.01:1;
 
 figure('pos',[0 0 1240 1748]);
