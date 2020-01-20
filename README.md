@@ -25,15 +25,11 @@ Apart from this, the same parameters as in the minimal model can be set here.
 
 ![Parameter initialisation for strain-specific model in main.m](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/generalParameterInitialisationStrainSpecific.jpg)
 
-The food-leaving probabilites of *npr-1* and N2 worms (leavingRateNpr1 and leavingRateN2) and the speeds on and off food (speedOnFoodNpr1, speedOffFoodNpr1, speedOnFoodN2 and speedOffFoodN2) can be set in the parts of the script depicted below.
-
-![Parameter initialisation for strain-specific model in main.m for npr-1 worms](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/parameterInitialisationNpr1.jpg)
-
-![Parameter initialisation for strain-specific model in main.m for N2 worms](https://github.com/lsmuhle/CollectiveFeeding/blob/master/images/parameterInitialisationN2.jpg)
+The food-leaving probabilites of *npr-1* and N2 worms (leavingRateNpr1 and leavingRateN2) and the speeds on and off food (speedOnFoodNpr1, speedOffFoodNpr1, speedOnFoodN2 and speedOffFoodN2) can be set in the first part of the scripts.
 
 Afterwards run the simulation and save the desired outputs.
 
 ## Analysis of simulations
 In both the folder MinimalModel and the folder StrainSpecificModel a subfolder 'analysis' can be found. This subfolders contain a script analysis[...].m, which is required for the analysis of data obtained from the simulations. This script computes the mean time steps social and solitary or *npr-1* and N2 worms, respectively, need to deplete 90% of the food and creates a plot of the mean time steps of social and solitary worms need dependent on the degree of food clustering (determined by gamma), respectively a plot of the mean time steps of *npr-1* and N2 steps over one, two and four food patches. Furthermore, the script creates histograms of ingested food units per worm and calculates individual feeding efficiencies and creates histograms dependent on food distribution and worm type for this.
 
-The subfolders 'analysis' also includes the data we obtained from our simulations and used for the analysis and movies of the simulation of social and solitary foraging in different food environments (varying values for gamma) and of foraging of *npr-1* and N2 worms in environments with different number of food patches. 
+The subfolders 'analysis' also includes the data we obtained from our simulations and used for the analysis and movies of the simulation of social and solitary foraging in different food environments (varying values for gamma) and of foraging of *npr-1* and N2 worms in environments with different number of food patches.
