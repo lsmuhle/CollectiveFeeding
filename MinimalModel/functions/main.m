@@ -1,10 +1,10 @@
 clear; 
 clear -vars;
 %% Parameter Initialization
-gamma = 3;                                                          % controls  degree of food clustering
+gamma = 0;                                                          % controls  degree of food clustering
 L = 35;                                                             % size of the lattice --> lattice has LxL sites   
 N = 40;                                                             % number of worms in simulation  
-time = 2000;                                                        % number of times steps for which the simulation is executed 
+time = 1000;   % choose smaller for lower gamma                     % number of times steps for which the simulation is executed 
 numberSimulations = 1;                                            % number of repetitions of the simulation
 numberFUs = 10*L*L;                                                 % number of distributed food units (FU)
 initialWorms = wormDistribution(numberSimulations,N,L);             % initial distribution of worms on lattice
@@ -111,7 +111,7 @@ end
 f = figure;
 set(f,'Units','pixels','Position',[0,0,1920,1080])
     
-v = VideoWriter('gamma3_L35_N40','MPEG-4');
+v = VideoWriter(['gamma' num2str(gamma) '_L35_N40'],'MPEG-4');
 v.Quality = 100;
 open(v);
 for i = 1:time
@@ -132,7 +132,7 @@ for i = 1:time
     caxis([0 max(max(initialFUs))])
     view(0,-90)
     grid on;
-    title1 = title('social foraging');
+    title1 = title('collective foraging');
     title1.FontSize = 34; 
     
     subplot(1,2,2);
@@ -154,5 +154,3 @@ for i = 1:time
     writeVideo(v,frame);
 end
 close(v);
-
-

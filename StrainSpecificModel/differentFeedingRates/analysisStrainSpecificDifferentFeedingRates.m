@@ -284,7 +284,7 @@ lgd.LineWidth = 6;
 lgd.FontSize = 40;
 title('four food patches')
 box off
-savefig("feeding_units_strain_specific_feedingrates_2patch")
+savefig("feeding_units_strain_specific_feedingrates_4patch")
 
 %% calculate efficiencies 
 
