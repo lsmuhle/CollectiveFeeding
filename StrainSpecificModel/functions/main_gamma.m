@@ -1,7 +1,7 @@
 clear;
 
 % specify folder to save outputs
-savepath = '../sameFeedingRatesGamma/';
+savepath = '../analysis/sameFeedingRatesGamma/';
 filesuffix = 'SameFeedingRatesGamma'; % file name ending
 
 %% Parameter Initialization

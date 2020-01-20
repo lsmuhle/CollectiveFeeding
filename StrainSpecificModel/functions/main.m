@@ -1,7 +1,7 @@
 clear;
 
 % specify folder to save outputs
-savepath = '../dataZeroFoodLeavingProbability/';
+savepath = '../analysis/dataZeroFoodLeavingProbability/';
 filesuffix = 'ZeroLeavingLowerFeedingRate'; % file name ending
 
 %% Parameter Initialization
