@@ -1,15 +1,15 @@
 clear;
 
 % specify folder to save outputs
-savepath = '../analysis/sameFeedingRatesGamma/';
-filesuffix = 'SameFeedingRatesGamma'; % file name ending
+savepath = '../analysis/differentFeedingRatesGamma/';
+filesuffix = 'DifferentFeedingRatesGamma'; % file name ending
 
 %% Parameter Initialization
-for gamma = [3]
+for gamma = [0 1 2 3]
 L = 35;                                                 % size of the lattice --> lattice has LxL sites   
 N = 40;                                                  % number of worms in simulation
 time = 1200;                                            % number of times steps for which the simulation is executed 
-numberSimulations = 500;                                  % number of repetitions of the simulation
+numberSimulations = 1;                                  % number of repetitions of the simulation
 numberFUs = 10*L*L;                                     % number of distributed food units (FU)
 initialWorms = wormDistribution(numberSimulations,N,L);             % initial distribution of worms on lattice
 initialFUs = FUsDistribution(numberFUs,numberSimulations,gamma,L);  % initial distribution of FUs on lattice
@@ -24,10 +24,10 @@ speedOnFoodNpr1 = 2;                                    % determines speed of np
 speedOffFoodNpr1 = 2;                                   % determines speed of npr-1 worms in absence of food 
 leavingRateNpr1 = 0                                  % determines food-leaving rate of npr-1 worms 
 relativeFeedingRateN2 = 0.4
-relativeFeedingRateNpr1 = 0.4%0.62*relativeFeedingRateN2
+relativeFeedingRateNpr1 = 0.62*relativeFeedingRateN2
 %% Script for foraging with possible targeted steps
 
-parfor simCtr = 1:numberSimulations
+for simCtr = 1:numberSimulations
     rng(simCtr) % random-number generator seeded reproducibly for this simulation
     % initialize simulation-specific parameters
     thisNpr1 = zeros(N,2,time);                             % stores position of each npr-1 worm for every time step within one repetition
@@ -54,7 +54,7 @@ parfor simCtr = 1:numberSimulations
         npr1Worms(npr1Worms < 1) = npr1Worms(npr1Worms < 1) + L;                % employ PBCs
 
         % Step 4: Save worm and FUs distribution
-%         thisNpr1(:,:,t) = npr1Worms; % uncomment this for movies, comment for parfor
+        thisNpr1(:,:,t) = npr1Worms; % uncomment this for movies, comment for parfor
         thisFUsNpr1(:,:,t) = FUsNpr1;
     end
     
@@ -70,9 +70,9 @@ parfor simCtr = 1:numberSimulations
         time90percentEatenNpr1(simCtr) = allTimes90PercentEatenNpr1(1);
     end
 end
-%% save npr1 data
-save([savepath 'L' num2str(L) 'N' num2str(N) 'gamma' num2str(gamma) 'Npr1' filesuffix '.mat'],...
-    'time90percentEatenNpr1','FUsEatenNpr1','allStepsNpr1')
+%% save npr1 data - COMMENT WHEN MAKING MOVIES
+% save([savepath 'L' num2str(L) 'N' num2str(N) 'gamma' num2str(gamma) 'Npr1' filesuffix '.mat'],...
+%     'time90percentEatenNpr1','FUsEatenNpr1','allStepsNpr1')
     
 %% Initialize parameters for simulation of random movement
 allStepsN2 = zeros(N,time,numberSimulations);           % stores number of steps each N2 worm has taken at every time step of all simulations
@@ -84,7 +84,7 @@ speedOffFoodN2 = 2;                                     % determines speed of N2
 leavingRateN2 = 0                                   % determines food-leaving rate of N2 worms
 %% Script for entirely random foraging
 
-parfor simCtr = 1:numberSimulations
+for simCtr = 1:numberSimulations
     rng(simCtr) % random-number generator seeded reproducibly for this simulation
     % initialize simulation-specific parameters
     thisN2 = zeros(N,2,time);                               % stores position of each N2 worm for every time step of one simulation repetition
@@ -112,7 +112,7 @@ parfor simCtr = 1:numberSimulations
         N2worms(N2worms < 1) = N2worms(N2worms < 1) + L;                    % employ PBCs
 
         % Step 4: Save worm and FUs distribution
-%         thisN2(:,:,l) = N2worms; % uncomment this for movies, comment for parfor
+        thisN2(:,:,l) = N2worms; % uncomment this for movies, comment for parfor
         thisFUsN2(:,:,l) = FUsN2;
     end
     
@@ -128,9 +128,49 @@ parfor simCtr = 1:numberSimulations
         time90percentEatenN2(simCtr) = allTimes90PercentEatenN2(1);
     end
 end
-%% save N2 data
-save([savepath 'L' num2str(L) 'N' num2str(N) 'gamma' num2str(gamma) 'N2' filesuffix '.mat'],...
-    'time90percentEatenN2','FUsEatenN2','allStepsN2')
+%% save N2 data - COMMENT WHEN MAKING MOVIES
+% save([savepath 'L' num2str(L) 'N' num2str(N) 'gamma' num2str(gamma) 'N2' filesuffix '.mat'],...
+%     'time90percentEatenN2','FUsEatenN2','allStepsN2')
+%% create snapshots of food without worms
+snapshots = round(linspace(1,time,5));
+for i = snapshots
+%     data_forager = thisNpr1(:,:,i);
+%     data_forager_2 = thisN2(:,:,i);
+    F = thisFUsNpr1(:,:,i);
+    F2 = thisFUsN2(:,:,i);
+    
+    subplot(1,2,1);
+    mesh(F,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(data_forager(:,2),data_forager(:,1),'r.','MarkerSize',20);
+%     hold off;
+    axis([1 L 1 L])
+    pbaspect([1 1 1])
+    set(gca,'XTickLabel',[])
+    set(gca,'YTickLabel',[])
+    caxis([0 max(max(initialFUs))])
+    view(0,-90)
+    grid on;
+    title1 = title(['npr-1 t=' num2str(i*10/3600,2) ' hours']);
+    title1.FontSize = 34; 
+    
+    subplot(1,2,2);
+    mesh(F2,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(data_forager_2(:,2),data_forager_2(:,1),'r.','MarkerSize',20);
+    hold off;
+    axis([1 L 1 L])
+    pbaspect([1 1 1])
+    set(gca,'XTickLabel',[])
+    set(gca,'YTickLabel',[])
+    caxis([0 max(max(initialFUs))])
+    view(0,-90)
+    grid on;
+    title2 = title(['N2 t=' num2str(i*10/3600,2) ' hours']);
+    title2.FontSize = 34;
+    savefig([savepath 'L' num2str(L) 'N' num2str(N) 'gamma' num2str(gamma) ...
+        't' num2str(i) '_' filesuffix])
+end
 %% Create movie
 
 % f = figure;

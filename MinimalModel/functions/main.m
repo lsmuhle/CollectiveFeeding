@@ -1,10 +1,12 @@
 clear; 
 clear -vars;
+savepath = '../analysis/';
+filesuffix = 'minimalmodel';
 %% Parameter Initialization
 gamma = 0;                                                          % controls  degree of food clustering
 L = 35;                                                             % size of the lattice --> lattice has LxL sites   
 N = 40;                                                             % number of worms in simulation  
-time = 1000;   % choose smaller for lower gamma                     % number of times steps for which the simulation is executed 
+time = 800;   % choose smaller for lower gamma                     % number of times steps for which the simulation is executed 
 numberSimulations = 1;                                            % number of repetitions of the simulation
 numberFUs = 10*L*L;                                                 % number of distributed food units (FU)
 initialWorms = wormDistribution(numberSimulations,N,L);             % initial distribution of worms on lattice
@@ -106,25 +108,19 @@ for loop2 = 1:numberSimulations
     end
 end
 
-%% Create movie
-
-f = figure;
-set(f,'Units','pixels','Position',[0,0,1920,1080])
-    
-v = VideoWriter(['gamma' num2str(gamma) '_L35_N40'],'MPEG-4');
-v.Quality = 100;
-open(v);
-for i = 1:time
-    dataSocialWorms = saveSocialWorms(:,:,i);
-    dataSolitaryWorms = saveSolitaryWorms(:,:,i);
+%% create snapshots of food without worms
+snapshots = round(linspace(1,time,5));
+for i = snapshots
+%     data_forager = thisNpr1(:,:,i);
+%     data_forager_2 = thisN2(:,:,i);
     F = saveFUsSocial(:,:,i);
     F2 = saveFUsSolitary(:,:,i);
     
     subplot(1,2,1);
     mesh(F,'EdgeColor','none','FaceColor','interp');
-    hold on;
-    plot(dataSocialWorms(:,2),dataSocialWorms(:,1),'r.','MarkerSize',20);
-    hold off;
+%     hold on;
+%     plot(data_forager(:,2),data_forager(:,1),'r.','MarkerSize',20);
+%     hold off;
     axis([1 L 1 L])
     pbaspect([1 1 1])
     set(gca,'XTickLabel',[])
@@ -132,13 +128,13 @@ for i = 1:time
     caxis([0 max(max(initialFUs))])
     view(0,-90)
     grid on;
-    title1 = title('collective foraging');
+    title1 = title(['collective foraging t=' num2str(i)]);
     title1.FontSize = 34; 
     
     subplot(1,2,2);
     mesh(F2,'EdgeColor','none','FaceColor','interp');
-    hold on;
-    plot(dataSolitaryWorms(:,2),dataSolitaryWorms(:,1),'r.','MarkerSize',20);
+%     hold on;
+%     plot(data_forager_2(:,2),data_forager_2(:,1),'r.','MarkerSize',20);
     hold off;
     axis([1 L 1 L])
     pbaspect([1 1 1])
@@ -147,10 +143,57 @@ for i = 1:time
     caxis([0 max(max(initialFUs))])
     view(0,-90)
     grid on;
-    title2 = title('solitary foraging');
+    title2 = title(['solitary foraging t=' num2str(i)]);
     title2.FontSize = 34;
-    
-    frame = getframe(gcf);
-    writeVideo(v,frame);
+    savefig([savepath 'L' num2str(L) 'N' num2str(N) 'gamma' num2str(gamma) ...
+        't' num2str(i) '_' filesuffix])
 end
-close(v);
+
+%% Create movie
+
+% f = figure;
+% set(f,'Units','pixels','Position',[0,0,1920,1080])
+%     
+% v = VideoWriter(['gamma' num2str(gamma) '_L35_N40'],'MPEG-4');
+% v.Quality = 100;
+% open(v);
+% for i = 1:time
+%     dataSocialWorms = saveSocialWorms(:,:,i);
+%     dataSolitaryWorms = saveSolitaryWorms(:,:,i);
+%     F = saveFUsSocial(:,:,i);
+%     F2 = saveFUsSolitary(:,:,i);
+%     
+%     subplot(1,2,1);
+%     mesh(F,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(dataSocialWorms(:,2),dataSocialWorms(:,1),'r.','MarkerSize',20);
+%     hold off;
+%     axis([1 L 1 L])
+%     pbaspect([1 1 1])
+%     set(gca,'XTickLabel',[])
+%     set(gca,'YTickLabel',[])
+%     caxis([0 max(max(initialFUs))])
+%     view(0,-90)
+%     grid on;
+%     title1 = title('collective foraging');
+%     title1.FontSize = 34; 
+%     
+%     subplot(1,2,2);
+%     mesh(F2,'EdgeColor','none','FaceColor','interp');
+%     hold on;
+%     plot(dataSolitaryWorms(:,2),dataSolitaryWorms(:,1),'r.','MarkerSize',20);
+%     hold off;
+%     axis([1 L 1 L])
+%     pbaspect([1 1 1])
+%     set(gca,'XTickLabel',[])
+%     set(gca,'YTickLabel',[])
+%     caxis([0 max(max(initialFUs))])
+%     view(0,-90)
+%     grid on;
+%     title2 = title('solitary foraging');
+%     title2.FontSize = 34;
+%     
+%     frame = getframe(gcf);
+%     writeVideo(v,frame);
+% end
+% close(v);
